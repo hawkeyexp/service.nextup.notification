@@ -131,8 +131,15 @@ class Player(xbmc.Player):
                     urllib.urlencode(userdata)
                     resp = requests.get(self.url, params=userdata, verify=False)
                     respdec = json.loads(resp.text)
-                    introStart = int(respdec["start"])
-                    introLength = int(respdec["length"])
+                    try:
+                        introStart = int(respdec["start"])
+                    except:
+                        introStart = 99999
+                    try:
+                        introLength = int(respdec["length"])
+                    except:
+                        introLength = 99999
+
                     WINDOW.setProperty("NextUpNotification.introStart", str(introStart))
                     WINDOW.setProperty("NextUpNotification.introLength", str(introLength))
                     if (addon.getSetting("enableSkipCheckDelay") == "true"):
