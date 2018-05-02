@@ -9,6 +9,7 @@ from NextUpInfo import NextUpInfo
 from StillWatchingInfo import StillWatchingInfo
 from UnwatchedInfo import UnwatchedInfo
 from PostPlayInfo import PostPlayInfo
+from SkipIntro import SkipIntro
 import sys
 
 if sys.version_info < (2, 7):
@@ -39,6 +40,8 @@ class Player(xbmc.Player):
     fields_tvshows = fields_base + '"sorttitle", "mpaa", "premiered", "year", "episode", "watchedepisodes", "votes", "rating", "studio", "season", "genre", "episodeguide", "tag", "originaltitle", "imdbnumber"'
     fields_episodes = fields_file + '"cast", "productioncode", "rating", "votes", "episode", "showtitle", "tvshowid", "season", "firstaired", "writer", "originaltitle"'
     postplaywindow = None
+    dbserver = addon.getSetting("SkipDBServer")
+    url = dbserver + "/index.php"
 
     def __init__(self, *args):
         self.__dict__ = self._shared_state
@@ -191,6 +194,7 @@ class Player(xbmc.Player):
         WINDOW = xbmcgui.Window(10000)
         WINDOW.clearProperty("NextUpNotification.NowPlaying.DBID")
         WINDOW.clearProperty("NextUpNotification.NowPlaying.Type")
+        WINDOW.clearProperty("NextUpNotification.Unskipped")
         # Get the active player
         result = self.getNowPlaying()
         if 'result' in result:
@@ -205,6 +209,39 @@ class Player(xbmc.Player):
                     tvshowid = self.showtitle_to_id(title=itemtitle)
                     self.logMsg("Fetched missing tvshowid " + str(tvshowid), 2)
                     WINDOW.setProperty("NextUpNotification.NowPlaying.DBID", str(tvshowid))
+
+                if (addon.getSetting("enableNextUpSkip") == "true"):
+                    episode = result["result"]["item"]["episode"]
+                    season = result["result"]["item"]["season"]
+                    if isinstance(itemtitle, unicode):
+                        itemtitle = itemtitle.encode('utf-8')
+                    userdata = {"title": itemtitle, "season": season, "episode": episode}
+                    urllib.urlencode(userdata)
+                    resp = requests.get(self.url, params=userdata, verify=False)
+                    respdec = json.loads(resp.text)
+                    try:
+                        introStart = int(respdec["start"])
+                    except:
+                        introStart = 99999
+                    try:
+                        introLength = int(respdec["length"])
+                    except:
+                        introLength = 99999
+
+                    WINDOW.setProperty("NextUpNotification.introStart", str(introStart))
+                    WINDOW.setProperty("NextUpNotification.introLength", str(introLength))
+                    if (addon.getSetting("enableSkipCheckDelay") == "true"):
+                        self.logMsg("Using delayed setting Unskipped", 1)
+                        # let's give kodi the chance to set xbmc.Player().getTime() to prevent
+                        # from popup notify directly after playback starts (possible only happens on slower systems like rpi
+                        time.sleep (3)
+
+                    if ((introStart != '') or (introLength != '')):
+                        WINDOW.setProperty("NextUpNotification.Unskipped", "True")
+                        # it was only for debugging
+                        #dlg = xbmcgui.Dialog()
+                        #dlg.notification("Nextup Service Notification", 'Skipping Intro Prepared!', xbmcgui.NOTIFICATION_INFO, 2000)
+
             elif itemtype == "movie":
                 WINDOW.setProperty("NextUpNotification.NowPlaying.Type", itemtype)
                 id = result["result"]["item"]["id"]
