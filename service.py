@@ -73,11 +73,15 @@ class Service():
 
                                 if nextUpSkipEnabledNoPause == 1:
                                     xbmc.Player().seekTime(introStart+introLength)
+                                    xbmc.executebuiltin('Action(StepForward)')
+                                    xbmc.executebuiltin('Action(StepBack)')
                                     xbmcgui.Window(10000).clearProperty("NextUpNotification.Unskipped")
                                 else:
                                     xbmc.Player().pause()
                                     time.sleep(1) # give kodi the chance to execute
                                     xbmc.Player().seekTime(introStart+introLength)
+                                    xbmc.executebuiltin('Action(StepForward)')
+                                    xbmc.executebuiltin('Action(StepBack)')
                                     time.sleep(1) # give kodi the chance to execute
                                     xbmc.Player().pause()# unpause playback at seek position
                                     xbmcgui.Window(10000).clearProperty("NextUpNotification.Unskipped")
