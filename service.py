@@ -62,7 +62,8 @@ class Service():
                     if xbmcgui.Window(10000).getProperty("NextUpNotification.Unskipped") == "True" and (nextUpSkipEnabled or nextUpSkipEnabled3rdP):
                         introStart = int(xbmcgui.Window(10000).getProperty("NextUpNotification.introStart"))
                         introLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.introLength"))
-                        self.logMsg("skip intro check playtime is "+str(playTime)+" introstart is "+str(introStart), 1)
+                        outroLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength"))
+                        self.logMsg("skip intro check playtime is "+str(playTime)+" introstart is "+str(introStart)+" outrolenght is "+str(outroStart), 1)
                         if ((introStart == 99999) or (introLength == 0) or (introLength == 99999)):
                             self.logMsg("Intro not set for episode (start=" + str(introStart) + " / length=" + str(introLength) + ") -> disable checks for this episode", 1)
                             xbmcgui.Window(10000).clearProperty("NextUpNotification.Unskipped")
