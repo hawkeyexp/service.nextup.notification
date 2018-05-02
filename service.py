@@ -94,7 +94,9 @@ class Service():
                                 skipIntroPage.show()
 
                     if xbmcgui.Window(10000).getProperty("PseudoTVRunning") != "True" and not nextUpDisabled:
-
+                        outroLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength"))
+                        if ((outroLength != 0) and (outroLength != 99999) and nextUpSkipEnabled):
+                            notificationtime = outroLength
                         if (not showpostplay or (showpostplaypreview and showpostplay)) and (totalTime - playTime <= int(notificationtime) and (
                                         lastFile is None or lastFile != currentFile)) and totalTime != 0:
                             lastFile = currentFile

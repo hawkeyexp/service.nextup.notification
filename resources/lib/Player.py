@@ -139,9 +139,14 @@ class Player(xbmc.Player):
                         introLength = int(respdec["length"])
                     except:
                         introLength = 99999
+                    try:
+                        outroLength = int(respdec["outro"])
+                    except:
+                        outroLength = 99999
 
                     WINDOW.setProperty("NextUpNotification.introStart", str(introStart))
                     WINDOW.setProperty("NextUpNotification.introLength", str(introLength))
+                    WINDOW.setProperty("NextUpNotification.outroLength", str(outroLength))
                     if (addon.getSetting("enableSkipCheckDelay") == "true"):
                         self.logMsg("Using delayed setting Unskipped", 1)
                         # let's give kodi the chance to set xbmc.Player().getTime() to prevent
