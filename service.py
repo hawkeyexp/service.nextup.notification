@@ -73,7 +73,7 @@ class Service():
 
                                 xbmc.Player().seekTime(introStart+introLength)
                                 xbmc.executebuiltin('Action(StepForward)')
-                                time.sleep(0.1)
+                                time.sleep(1)
                                 xbmc.executebuiltin('Action(StepBack)')
                                 xbmcgui.Window(10000).clearProperty("NextUpNotification.Unskipped")
                             else:
