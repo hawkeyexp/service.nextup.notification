@@ -72,8 +72,9 @@ class Service():
                                 dlg.notification("Nextup Service Notification", 'Skipping Intro...', xbmcgui.NOTIFICATION_INFO, 5000)
 
                                 xbmc.Player().seekTime(introStart+introLength)
-                                xbmc.executebuiltin('Action(StepForward)')
                                 time.sleep(1)
+                                xbmc.executebuiltin('Action(StepForward)')
+                                time.sleep(0.5)
                                 xbmc.executebuiltin('Action(StepBack)')
                                 xbmcgui.Window(10000).clearProperty("NextUpNotification.Unskipped")
                             else:
