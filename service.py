@@ -59,9 +59,21 @@ class Service():
                     showpostplaypreview = addonSettings.getSetting("showPostPlayPreview") == "true"
 
                     if xbmcgui.Window(10000).getProperty("NextUpNotification.Unskipped") == "True" and (nextUpSkipEnabled or nextUpSkipEnabled3rdP):
-                        introStart = int(xbmcgui.Window(10000).getProperty("NextUpNotification.introStart"))
-                        introLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.introLength"))
-                        outroLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength"))
+                        inst = xbmcgui.Window(10000).getProperty("NextUpNotification.introStart")
+                        inle = xbmcgui.Window(10000).getProperty("NextUpNotification.introLength")
+                        oule = xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength")
+                        if (inst != ""):
+                            introStart = int(inst)
+                        else:
+                            introStart = 99999
+                        if (inle != ""):
+                            introLength = int(inle)
+                        else:
+                            introLength = 99999
+                        if (oule != ""):
+                            outroLength = int(oule)
+                        else:
+                            outroLength = 99999
                         self.logMsg("skip intro check playtime is "+str(playTime)+" introstart is "+str(introStart)+" outrolenght is "+str(outroLength), 1)
                         if ((introStart == 99999) or (introLength == 0) or (introLength == 99999)):
                             self.logMsg("Intro not set for episode (start=" + str(introStart) + " / length=" + str(introLength) + ") -> disable checks for this episode", 1)
@@ -86,7 +98,11 @@ class Service():
                                 skipIntroPage.show()
 
                     if xbmcgui.Window(10000).getProperty("PseudoTVRunning") != "True" and not nextUpDisabled:
-                        outroLength = int(xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength"))
+                        oule = xbmcgui.Window(10000).getProperty("NextUpNotification.outroLength")
+                        if (oule != ""):
+                            outroLength = int(oule)
+                        else:
+                            outroLength = 99999
                         if ((outroLength != 0) and (outroLength != 99999) and nextUpSkipEnabled):
                             notificationtime = outroLength
                         if (not showpostplay or (showpostplaypreview and showpostplay)) and (totalTime - playTime <= int(notificationtime) and (
